@@ -1,25 +1,16 @@
-import { Router } from "express";
-import { pool } from "../db/conexion.js";
-import { verificarToken } from "../middlewares/auth.js";
+import request from "supertest";
+import express from "express";
+import postsRoutes from "../routes/posts.js";
 
-const router = Router();
+const app = express();
+app.use(express.json());
+app.use("/posts", postsRoutes);
 
-// GET
-router.get("/", async (req, res) => {
-  const { rows } = await pool.query("SELECT * FROM publicaciones");
-  res.json(rows);
+describe("API TEST", () => {
+
+  it("GET /posts debe responder 200", async () => {
+    const res = await request(app).get("/posts");
+    expect(res.statusCode).toBe(200);
+  });
+
 });
-
-// POST (PROTEGIDO)
-router.post("/", verificarToken, async (req, res) => {
-  const { nombre, categoria } = req.body;
-
-  await pool.query(
-    "INSERT INTO publicaciones (nombre, categoria) VALUES ($1, $2)",
-    [nombre, categoria]
-  );
-
-  res.send("Post creado");
-});
-
-export default router;

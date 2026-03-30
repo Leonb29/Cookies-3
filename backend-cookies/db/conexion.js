@@ -2,9 +2,12 @@ import pkg from "pg";
 const { Pool } = pkg;
 
 export const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
+  user: "cookies_user",
+  host: "dpg-abc123.render.com",
   database: "cookies_db",
-  password: "postgres", // ← tu contraseña real
+  password: "123456",
   port: 5432,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });

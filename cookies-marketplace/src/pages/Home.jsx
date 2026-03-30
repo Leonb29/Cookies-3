@@ -1,27 +1,62 @@
-import "./style.css";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import "../style.css";
+import { useState, useEffect } from "react";
+//import { Link } from "react-router-dom";
 
-function App() {
+function Home() {
+  // 🔥 estado datos desde backend
+  const [galletitas, setGalletitas] = useState([]);
 
-  // 🟢 GALLETITAS (ejemplos - podés agregar más)
-  const galletitas = [
-    { id: 1, nombre: "Baby Shower", categoria: "BabyShower", imagen: "/img/BabyShower/baby.png" },
-    { id: 2, nombre: "Casamiento", categoria: "Casamiento", imagen: "/img/Casamiento/boda.png" },
-    { id: 3, nombre: "Comunión", categoria: "Comunión - Bautizmo", imagen: "/img/Comunión - Bautizmo/comunion.png" },
-    { id: 4, nombre: "Cumple Temático", categoria: "Cumpleaños Temáticos", imagen: "/img/Cumpleaños Temáticos/cumple.png" },
-    { id: 5, nombre: "Despedida", categoria: "Despedida de Soltera", imagen: "/img/Despedida de Soltera/despedida.png" },
-    { id: 6, nombre: "Día de la Madre", categoria: "Día de la Madre", imagen: "/img/Día de la Madre/madre.png" },
-    { id: 7, nombre: "Día del Padre", categoria: "Día del Padre", imagen: "/img/Día del Padre/padre.png" },
-    { id: 8, nombre: "Navidad", categoria: "Navidad", imagen: "/img/Navidad/navidad.png" },
-    { id: 9, nombre: "Infantiles", categoria: "Personajes Infantiles", imagen: "/img/Personajes Infantiles/mickey.png" },
-    { id: 10, nombre: "San Valentín", categoria: "San Valentín", imagen: "/img/San Valentín/sanvalentin.png" },
-    { id: 11, nombre: "Superhéroes", categoria: "SuperHéroes", imagen: "/img/SuperHéroes/superheroes.png" },
-    { id: 12, nombre: "Video Juegos", categoria: "Video Juegos", imagen: "/img/cookies-marketplace/public/img/Video Juegos/videojuegos.png" }
-  ];
-
-  // 🔥 estado del filtro
+  // 🔥 estado filtro
   const [categoria, setCategoria] = useState("todas");
+
+  // 🚀 TRAER DATOS DEL BACKEND
+  const traerGalletitas = async () => {
+  try {
+    const res = await fetch("https://cookies-3-qg3w.onrender.com/posts");
+    const data = await res.json();
+    setGalletitas(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+  // 🚀 CUANDO CARGA LA PAGINA
+  useEffect(() => {
+    traerGalletitas();
+  }, []);
+
+  // 🔐 CREAR POST (PROTEGIDO)
+  const crearPost = async () => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch("https://cookies-3-qg3w.onrender.com/posts", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: token
+      },
+      body: JSON.stringify({
+        nombre: "Galleta nueva",
+        categoria: "Navidad",
+        imagen: "/img/Navidad/navidad.png"
+      })
+    });
+
+    // 🔥 VALIDACIÓN
+    if (!res.ok) {
+      alert("Error al crear post");
+      return;
+    }
+
+    alert("Post creado correctamente");
+
+    // 🔄 refrescar lista
+    traerGalletitas();
+
+  } catch (error) {
+    console.log(error);
+  }
+};
 
   // 🔥 filtrado
   const filtradas =
@@ -39,6 +74,10 @@ function App() {
           <h1>Las Cookies de Marr</h1>
         </div>
 
+        <a href="/login" style={{ marginLeft: "auto" }}>
+          <button>Login</button>
+        </a>
+
         <div className="barra-deslizante">
           <div className="cinta">
             <span className="item">🎉 20% OFF LA SEGUNDA DOCENA</span>
@@ -47,6 +86,11 @@ function App() {
           </div>
         </div>
       </header>
+
+      {/* BOTÓN PARA CREAR POST */}
+      <div style={{ textAlign: "center", margin: "10px" }}>
+        <button onClick={crearPost}>Crear Galletita</button>
+      </div>
 
       {/* CONTENIDO */}
       <div className="contenedor">
@@ -75,13 +119,13 @@ function App() {
         {/* GALERÍA */}
         <main className="galletitas">
 
-          {filtradas.map(g => (
-            <div key={g.id} className="card">
-              <img src={g.imagen} alt={g.nombre} />
-              <h3>{g.nombre}</h3>
-              <p>{g.categoria}</p>
-            </div>
-          ))}
+            {filtradas.map(g => (
+              <div key={g.id} className="card">
+                <img src={g.imagen} alt={g.nombre} />
+                <h3>{g.nombre}</h3>
+                <p>{g.categoria}</p>
+              </div>
+            ))}
 
         </main>
 
@@ -110,4 +154,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;

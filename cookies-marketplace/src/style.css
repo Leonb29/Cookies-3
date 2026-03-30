@@ -166,13 +166,6 @@ main {
   max-width: 300px;
 }
 
-@font-face {
-  font-family: 'MiFuentePersonal';
-  src: url('fonts/Cookies.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
-
 .lightbox {
   position: fixed;
   top: 0;

@@ -6,8 +6,12 @@ const router = Router();
 
 // GET
 router.get("/", async (req, res) => {
-  const { rows } = await pool.query("SELECT * FROM publicaciones");
-  res.json(rows);
+  try {
+    const { rows } = await pool.query("SELECT * FROM publicaciones");
+    res.json(rows);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
 });
 
 // POST (PROTEGIDO)
