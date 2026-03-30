@@ -4,7 +4,6 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // 🔹 Función de login
   const handleLogin = async () => {
     try {
       const res = await fetch("https://cookies-3-qg3w.onrender.com/users/login", {
@@ -28,7 +27,6 @@ function Login() {
     }
   };
 
-  // 🔹 Función de registro
   const handleRegister = async () => {
     try {
       const res = await fetch("https://cookies-3-qg3w.onrender.com/users/register", {
@@ -48,6 +46,11 @@ function Login() {
       console.log("ERROR:", error);
       alert("Error de conexión");
     }
+  };
+
+  // 🔹 Función para volver a la página principal
+  const goHome = () => {
+    window.location.href = "/"; // Cambia "/" si tu página principal tiene otra ruta
   };
 
   return (
@@ -71,6 +74,8 @@ function Login() {
       <button onClick={handleLogin}>Ingresar</button>
       &nbsp;&nbsp;
       <button onClick={handleRegister}>Registrarse</button>
+      <br /><br />
+      <button onClick={goHome}>Volver a la página principal</button>
     </div>
   );
 }
