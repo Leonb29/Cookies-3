@@ -54,4 +54,33 @@ router.post("/login", async (req, res) => {
   }
 });
 
+// 🟢 Crear usuario administrador por defecto al iniciar el servidor
+const createAdminUser = async () => {
+  try {
+    // Verifica si ya existe
+    const { rows } = await pool.query(
+      "SELECT * FROM usuarios WHERE email = $1",
+      ["leonb"]
+    );
+
+    if (rows.length === 0) {
+      const hash = await bcrypt.hash("123456", 10);
+
+      await pool.query(
+        "INSERT INTO usuarios (email, password) VALUES ($1, $2)",
+        ["leonb", hash]
+      );
+
+      console.log("Usuario administrador 'leonb' creado ✅");
+    } else {
+      console.log("Usuario administrador 'leonb' ya existe ✅");
+    }
+  } catch (error) {
+    console.error("Error creando usuario administrador:", error.message);
+  }
+};
+
+// Ejecutar al iniciar el servidor
+createAdminUser();
+
 export default router;
