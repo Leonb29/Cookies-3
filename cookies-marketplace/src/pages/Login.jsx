@@ -4,37 +4,55 @@ function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // 🔹 Función de login
   const handleLogin = async () => {
-  try {
-    const res = await fetch("https://cookies-3-qg3w.onrender.com/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, password })
-    });
+    try {
+      const res = await fetch("https://cookies-3-qg3w.onrender.com/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    console.log("RESPUESTA:", data);
+      if (!res.ok) {
+        alert("Error login: " + (data.message || "credenciales incorrectas"));
+        return;
+      }
 
-    if (!res.ok) {
-      alert("Error login: " + (data.message || "credenciales incorrectas"));
-      return;
+      localStorage.setItem("token", data.token);
+      alert("Login exitoso");
+    } catch (error) {
+      console.log("ERROR:", error);
+      alert("Error de conexión");
     }
+  };
 
-    localStorage.setItem("token", data.token);
+  // 🔹 Función de registro
+  const handleRegister = async () => {
+    try {
+      const res = await fetch("https://cookies-3-qg3w.onrender.com/users/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
 
-    alert("Login exitoso");
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert("Error registro: " + (data.message || "No se pudo registrar"));
+        return;
+      }
 
-  } catch (error) {
-    console.log("ERROR:", error);
-    alert("Error de conexión");
-  }
-};
+      alert("Usuario registrado correctamente ✅");
+    } catch (error) {
+      console.log("ERROR:", error);
+      alert("Error de conexión");
+    }
+  };
+
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h2>Login</h2>
+      <h2>Login / Registro</h2>
 
       <input
         type="email"
@@ -51,6 +69,8 @@ function Login() {
       <br /><br />
 
       <button onClick={handleLogin}>Ingresar</button>
+      &nbsp;&nbsp;
+      <button onClick={handleRegister}>Registrarse</button>
     </div>
   );
 }
