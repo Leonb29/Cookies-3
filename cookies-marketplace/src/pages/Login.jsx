@@ -5,26 +5,33 @@ function Login() {
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    try {
-      const res = await fetch("https://cookies-3-qg3w.onrender.com/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ email, password })
-      });
+  try {
+    const res = await fetch("https://cookies-3-qg3w.onrender.com/users/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      localStorage.setItem("token", data.token);
+    console.log("RESPUESTA:", data);
 
-      alert("Login exitoso");
-
-    } catch (error) {
-      console.log(error);
+    if (!res.ok) {
+      alert("Error login: " + (data.message || "credenciales incorrectas"));
+      return;
     }
-  };
 
+    localStorage.setItem("token", data.token);
+
+    alert("Login exitoso");
+
+  } catch (error) {
+    console.log("ERROR:", error);
+    alert("Error de conexión");
+  }
+};
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
       <h2>Login</h2>
