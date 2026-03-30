@@ -3,7 +3,7 @@ const { Pool } = pkg;
 
 export const pool = new Pool({
   user: "cookies_db_nbmg_user",
-  host: "dpg-d74vlckr85hc73fvppq0-a",
+  host: "dpg-d74vlckr85hc73fvppq0-a.oregon-postgres.render.com",
   database: "cookies_db_nbmg",
   password: "usjMax55WhNyvu3LShfoIPkuAarEb3V9",
   port: 5432,
